@@ -1,0 +1,40 @@
+use bevy::prelude::*;
+
+use crate::{board::components::Position, pieces::component::Piece};
+
+use super::{get_world_position, GraphicsAssets, PIECE_SPEED, PIECE_Z, POSITION_TOLERANCE, TILE_SIZE};
+
+pub fn update_piece_position(mut query: Query<(&Position, &mut Transform), With<Piece>>, time: Res<Time>) {
+    for (position, mut transform) in query.iter_mut() {
+        let target = get_world_position(position, PIECE_Z);
+        let d = (target - transform.translation).length();
+        if d > POSITION_TOLERANCE {
+            transform.translation = transform.translation.lerp(target, PIECE_SPEED * time.delta_seconds());
+        } else {
+            transform.translation = target;
+        }
+    }
+}
+
+pub fn spawn_piece_renderer(
+    mut commands: Commands,
+    query: Query<(Entity, &Position, &Piece), Added<Piece>>,
+    assets: Res<GraphicsAssets>,
+) {
+    for (entity, position, piece) in query.iter() {
+        let sprite_idx = match piece.kind.as_str() {
+            "Player" => 1,
+            _ => 63,
+        };
+        let mut sprite = TextureAtlasSprite::new(sprite_idx);
+        sprite.custom_size = Some(Vec2::splat(TILE_SIZE));
+        sprite.color = Color::WHITE;
+        let v = get_world_position(position, PIECE_Z);
+        commands.entity(entity).insert(SpriteSheetBundle {
+            sprite,
+            texture_atlas: assets.sprite_texture.clone(),
+            transform: Transform::from_translation(v),
+            ..Default::default()
+        });
+    }
+}

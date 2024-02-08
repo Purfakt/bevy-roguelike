@@ -9,6 +9,9 @@ mod board;
 mod camera;
 mod globals;
 mod graphics;
+mod input;
+mod pieces;
+mod player;
 mod states;
 mod vectors;
 
@@ -30,7 +33,13 @@ fn main() {
         )
         .insert_resource(Msaa::Off)
         .add_state::<states::MainState>()
-        .add_plugins((assets::AssetPlugin, board::BoardPlugin, graphics::GraphicsPlugin))
+        .add_plugins((
+            assets::AssetPlugin,
+            board::BoardPlugin,
+            input::InputPlugin,
+            graphics::GraphicsPlugin,
+            player::PlayerPlugin,
+        ))
         .add_systems(Startup, setup)
         .run()
 }
