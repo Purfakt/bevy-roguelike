@@ -3,16 +3,16 @@ use std::ops::{Add, AddAssign, Div, Mul, Sub, SubAssign};
 #[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
 pub struct Vector2Int {
     pub x: i32,
-    pub y: i32
+    pub y: i32,
 }
 
 impl Vector2Int {
-    pub const UP: Vector2Int = Vector2Int { x:0, y: 1 };
-    pub const DOWN: Vector2Int = Vector2Int { x:0, y: -1 };
-    pub const LEFT: Vector2Int = Vector2Int { x:-1, y: 0 };
-    pub const RIGHT: Vector2Int = Vector2Int { x:1, y: 0 };
+    pub const UP: Vector2Int = Vector2Int { x: 0, y: 1 };
+    pub const DOWN: Vector2Int = Vector2Int { x: 0, y: -1 };
+    pub const LEFT: Vector2Int = Vector2Int { x: -1, y: 0 };
+    pub const RIGHT: Vector2Int = Vector2Int { x: 1, y: 0 };
     pub fn new(x: i32, y: i32) -> Vector2Int {
-        Vector2Int{x, y}
+        Vector2Int { x, y }
     }
     pub fn manhattan(&self, other: Vector2Int) -> i32 {
         (self.x - other.x).abs() + (self.y - other.y).abs()
@@ -29,7 +29,10 @@ impl Add for Vector2Int {
 
 impl AddAssign for Vector2Int {
     fn add_assign(&mut self, other: Self) {
-        *self = Self{x: self.x + other.x, y: self.y + other.y};
+        *self = Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        };
     }
 }
 
@@ -43,7 +46,10 @@ impl Sub for Vector2Int {
 
 impl SubAssign for Vector2Int {
     fn sub_assign(&mut self, other: Self) {
-        *self = Self{x: self.x - other.x, y: self.y - other.y};
+        *self = Self {
+            x: self.x - other.x,
+            y: self.y - other.y,
+        };
     }
 }
 
@@ -71,7 +77,4 @@ impl Mul<Vector2Int> for i32 {
     }
 }
 
-pub const ORTHO_DIRECTIONS: [Vector2Int; 4] = [
-    Vector2Int::UP, Vector2Int::DOWN,
-    Vector2Int::LEFT, Vector2Int::RIGHT
-];
+pub const _ORTHO_DIRECTIONS: [Vector2Int; 4] = [Vector2Int::UP, Vector2Int::DOWN, Vector2Int::LEFT, Vector2Int::RIGHT];

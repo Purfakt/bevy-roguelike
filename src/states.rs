@@ -5,10 +5,18 @@ pub enum MainState {
     #[default]
     LoadAssets,
     Game,
-    AwaitingInput,
-    PlayerTurn,
-    EnemyTurn,
-    GameOver,
-    Victory,
-    NextLevel,
+    _AwaitingInput,
+    _PlayerTurn,
+    _EnemyTurn,
+    _GameOver,
+    _Victory,
+    _NextLevel,
+}
+
+#[derive(Clone, Debug, Default, Hash, Eq, States, PartialEq, SystemSet)]
+pub enum GameState {
+    #[default]
+    None,
+    PlayerInput,
+    TurnUpdate,
 }

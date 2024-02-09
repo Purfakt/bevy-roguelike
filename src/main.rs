@@ -4,12 +4,14 @@ pub use bevy::utils::HashMap;
 use crate::camera::setup;
 use crate::globals::{SCREEN_HEIGHT, SCREEN_WIDTH};
 
+mod actions;
 mod assets;
 mod board;
 mod camera;
 mod globals;
 mod graphics;
 mod input;
+mod manager;
 mod pieces;
 mod player;
 mod states;
@@ -33,11 +35,14 @@ fn main() {
         )
         .insert_resource(Msaa::Off)
         .add_state::<states::MainState>()
+        .add_state::<states::GameState>()
         .add_plugins((
+            actions::ActionsPlugin,
             assets::AssetPlugin,
             board::BoardPlugin,
-            input::InputPlugin,
             graphics::GraphicsPlugin,
+            input::InputPlugin,
+            manager::ManagerPlugin,
             player::PlayerPlugin,
         ))
         .add_systems(Startup, setup)

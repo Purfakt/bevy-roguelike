@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::board::components::Position;
-use crate::pieces::component::Piece;
+use crate::pieces::components::{Actor, Piece};
 use crate::states::MainState;
 use crate::vectors::Vector2Int;
 
@@ -19,6 +19,7 @@ pub struct Player;
 fn spawn_player(mut commands: Commands) {
     commands.spawn((
         Player,
+        Actor(None),
         Piece {
             kind: "Player".to_string(),
         },
