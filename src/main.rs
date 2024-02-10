@@ -1,8 +1,11 @@
 pub use bevy::prelude::*;
 pub use bevy::utils::HashMap;
 
-use crate::camera::setup;
-use crate::globals::{SCREEN_HEIGHT, SCREEN_WIDTH};
+use crate::{
+    camera::setup,
+    globals::{SCREEN_HEIGHT, SCREEN_WIDTH},
+    states::{GameState, MainState},
+};
 
 mod actions;
 mod assets;
@@ -34,8 +37,8 @@ fn main() {
                 .set(ImagePlugin::default_nearest()),
         )
         .insert_resource(Msaa::Off)
-        .add_state::<states::MainState>()
-        .add_state::<states::GameState>()
+        .add_state::<MainState>()
+        .add_state::<GameState>()
         .add_plugins((
             actions::ActionsPlugin,
             assets::AssetPlugin,
@@ -43,6 +46,7 @@ fn main() {
             graphics::GraphicsPlugin,
             input::InputPlugin,
             manager::ManagerPlugin,
+            pieces::PiecesPlugin,
             player::PlayerPlugin,
         ))
         .add_systems(Startup, setup)

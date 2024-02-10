@@ -77,4 +77,4 @@ impl Mul<Vector2Int> for i32 {
     }
 }
 
-pub const _ORTHO_DIRECTIONS: [Vector2Int; 4] = [Vector2Int::UP, Vector2Int::DOWN, Vector2Int::LEFT, Vector2Int::RIGHT];
+pub const ORTHO_DIRECTIONS: [Vector2Int; 4] = [Vector2Int::UP, Vector2Int::DOWN, Vector2Int::LEFT, Vector2Int::RIGHT];

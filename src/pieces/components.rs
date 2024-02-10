@@ -7,5 +7,8 @@ pub struct Piece {
     pub kind: String,
 }
 
+#[derive(Component)]
+pub struct Walk;
+
 #[derive(Component, Default)]
 pub struct Actor(pub Option<Box<dyn Action>>);

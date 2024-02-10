@@ -19,7 +19,7 @@ pub struct Player;
 fn spawn_player(mut commands: Commands) {
     commands.spawn((
         Player,
-        Actor(None),
+        Actor::default(),
         Piece {
             kind: "Player".to_string(),
         },
