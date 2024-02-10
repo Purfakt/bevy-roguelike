@@ -15,7 +15,7 @@ pub struct InputPlugin;
 impl Plugin for InputPlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<PlayerInputReadyEvent>()
-            .add_systems(Update, player_position.in_set(GameState::PlayerInput));
+            .add_systems(Update, player_position.run_if(in_state(GameState::PlayerInput)));
     }
 }
 
@@ -46,5 +46,6 @@ fn player_position(
         actor.0 = Some(Box::new(action));
         queue.0 = VecDeque::from([entity]);
         event_input.send(PlayerInputReadyEvent);
+        info!("Input ready");
     }
 }
