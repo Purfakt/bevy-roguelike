@@ -38,5 +38,5 @@ impl Plugin for GraphicsPlugin {
 pub struct GraphicsWaitEvent;
 
 fn get_world_position(position: &Position, z: f32) -> Vec3 {
-    Vec3::new(TILE_SIZE * position.0.x as f32, TILE_SIZE * position.0.y as f32, z)
+    Vec3::new(TILE_SIZE * position.v.x as f32, TILE_SIZE * position.v.y as f32, z)
 }

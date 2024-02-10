@@ -5,7 +5,7 @@ use bevy::prelude::*;
 use crate::actions::models::WalkAction;
 use crate::actions::ActorQueue;
 use crate::board::components::Position;
-use crate::pieces::components::Actor;
+use crate::pieces::components::{Actor, PrioritizedAction};
 use crate::player::Player;
 use crate::states::GameState;
 use crate::vectors::Vector2Int;
@@ -42,8 +42,14 @@ fn player_position(
         if !keys.just_pressed(key) {
             continue;
         }
-        let action = WalkAction(entity, position.0 + dir);
-        actor.0 = Some(Box::new(action));
+        let action = WalkAction {
+            entity,
+            target_position: position.v + dir,
+        };
+        actor.potential_actions = vec![PrioritizedAction {
+            action: Box::new(action),
+            priority: 1,
+        }];
         queue.0 = VecDeque::from([entity]);
         event_input.send(PlayerInputReadyEvent);
         info!("Input ready");

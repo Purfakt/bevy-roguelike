@@ -4,7 +4,9 @@ use bevy::utils::HashMap;
 use crate::vectors::Vector2Int;
 
 #[derive(Component)]
-pub struct Position(pub Vector2Int);
+pub struct Position {
+    pub v: Vector2Int,
+}
 
 #[derive(Component)]
 pub struct Tile;

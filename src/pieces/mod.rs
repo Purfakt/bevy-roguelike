@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::{board::components::Position, states::MainState, vectors::Vector2Int};
 
-use self::components::{Actor, Piece, Walk};
+use self::components::{Actor, MeleeAttack, Occupier, Piece, Walk};
 
 pub mod components;
 
@@ -20,8 +20,12 @@ fn spawn_npc(mut commands: Commands) {
         Piece {
             kind: "NPC".to_string(),
         },
-        Position(Vector2Int { x: 5, y: 3 }),
+        Position {
+            v: Vector2Int { x: 5, y: 3 },
+        },
+        Occupier,
         Walk,
+        MeleeAttack { damage: 1 },
     ));
 
     commands.spawn((
@@ -29,7 +33,11 @@ fn spawn_npc(mut commands: Commands) {
         Piece {
             kind: "NPC".to_string(),
         },
-        Position(Vector2Int { x: 5, y: 5 }),
+        Position {
+            v: Vector2Int { x: 5, y: 5 },
+        },
+        Occupier,
         Walk,
+        MeleeAttack { damage: 1 },
     ));
 }

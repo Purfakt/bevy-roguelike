@@ -1,9 +1,11 @@
 use bevy::prelude::*;
 
-use crate::board::components::Position;
-use crate::pieces::components::{Actor, Piece};
-use crate::states::MainState;
-use crate::vectors::Vector2Int;
+use crate::{
+    board::components::Position,
+    pieces::components::{Actor, Health, Occupier, Piece},
+    states::MainState,
+    vectors::Vector2Int,
+};
 
 pub struct PlayerPlugin;
 
@@ -20,9 +22,13 @@ fn spawn_player(mut commands: Commands) {
     commands.spawn((
         Player,
         Actor::default(),
+        Health { value: 10 },
         Piece {
             kind: "Player".to_string(),
         },
-        Position(Vector2Int { x: 0, y: 0 }),
+        Position {
+            v: Vector2Int { x: 0, y: 0 },
+        },
+        Occupier,
     ));
 }
