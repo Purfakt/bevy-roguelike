@@ -48,7 +48,6 @@ impl Action for MeleeAttackAction {
         let attacker_position = world.get::<Position>(self.attacker).ok_or(())?;
 
         if attacker_position.v.manhattan(self.target_position) > 1 {
-            info!("Target out of range!");
             return Err(());
         }
 
@@ -59,7 +58,6 @@ impl Action for MeleeAttackAction {
             .collect::<Vec<_>>();
 
         if target_entities.is_empty() {
-            info!("No target found!");
             return Err(());
         };
 
@@ -72,8 +70,6 @@ impl Action for MeleeAttackAction {
                 }) as Box<dyn Action>
             })
             .collect::<Vec<_>>();
-
-        info!("Attacking {:?}!", self.target_position);
         Ok(result)
     }
 }
@@ -87,7 +83,6 @@ impl Action for DamageAction {
     fn execute(&self, world: &mut World) -> Result<Vec<Box<dyn Action>>, ()> {
         let mut health = world.get_mut::<Health>(self.target).ok_or(())?;
         health.value = health.value.saturating_sub(self.damage);
-        info!("Dealt {} damage to {:?}", self.damage, self.target);
         if health.value == 0 {
             world.despawn(self.target);
         }

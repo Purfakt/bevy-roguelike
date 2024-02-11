@@ -11,7 +11,6 @@ pub fn find_path(
     tiles: &HashSet<Vector2Int>,
     blockers: &HashSet<Vector2Int>,
 ) -> Option<VecDeque<Vector2Int>> {
-    println!("Finding path from {:?} to {:?}", start, end);
     let mut queue = BinaryHeap::new();
     queue.push(Node { v: start, cost: 0 });
     let mut visited = HashMap::new();

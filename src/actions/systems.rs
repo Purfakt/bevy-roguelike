@@ -28,10 +28,12 @@ pub fn process_action_queue(world: &mut World) {
     let Some(mut queue) = world.get_resource_mut::<ActorQueue>() else {
         return;
     };
+
     let Some(entity) = queue.0.pop_front() else {
         world.send_event(ActionsCompleteEvent);
         return;
     };
+
     let Some(mut actor) = world.get_mut::<Actor>(entity) else {
         return;
     };
@@ -104,10 +106,7 @@ pub fn plan_walk(
         let mut d = rng.gen_range(-10..0);
         if let Some(path) = &path_to_player {
             if path.contains(v) {
-                info!("Found path to player!");
                 d = 5;
-            } else {
-                info!("No path to player");
             }
         }
 
@@ -129,15 +128,12 @@ pub fn plan_melee_attack(
     queue: Res<ActorQueue>,
 ) {
     let Some(entity) = queue.0.front() else {
-        info!("No actor in queue!");
         return;
     };
     let Ok((mut actor, melee)) = query.get_mut(*entity) else {
-        info!("No melee attack component found!");
         return;
     };
     let Ok(player_position) = player_query.get_single() else {
-        info!("No player position found!");
         return;
     };
     let action = Box::new(MeleeAttackAction {
