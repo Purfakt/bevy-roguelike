@@ -6,6 +6,7 @@ use crate::vectors::Vector2Int;
 
 pub trait Card: Send + Sync {
     fn get_action(&self, owner: Entity, target: Option<Vector2Int>) -> Option<Box<dyn Action>>;
+    fn get_label(&self) -> String;
 }
 
 #[derive(Component)]
@@ -22,6 +23,10 @@ impl Card for WalkCard {
             target_position: target?,
         }))
     }
+
+    fn get_label(&self) -> String {
+        "Walk".to_string()
+    }
 }
 
 pub struct MeleeCard {
@@ -35,5 +40,9 @@ impl Card for MeleeCard {
             target_position: target?,
             damage: self.damage,
         }))
+    }
+
+    fn get_label(&self) -> String {
+        format!("Melee\n{} dmg", self.damage)
     }
 }

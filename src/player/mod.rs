@@ -12,7 +12,7 @@ use crate::{
 
 use self::cards::CardHolder;
 
-mod cards;
+pub mod cards;
 
 pub struct PlayerPlugin;
 

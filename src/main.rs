@@ -18,6 +18,7 @@ mod manager;
 mod pieces;
 mod player;
 mod states;
+mod ui;
 mod vectors;
 
 fn main() {
@@ -48,6 +49,7 @@ fn main() {
             manager::ManagerPlugin,
             pieces::PiecesPlugin,
             player::PlayerPlugin,
+            ui::UiPlugin,
         ))
         .add_systems(Startup, setup)
         .run()
