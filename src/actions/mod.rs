@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use std::collections::VecDeque;
+use std::{any::Any, collections::VecDeque};
 
 use crate::states::GameState;
 
@@ -18,6 +18,7 @@ impl Plugin for ActionsPlugin {
             .add_event::<NextActorEvent>()
             .add_event::<ActionsCompleteEvent>()
             .add_event::<InvalidPlayerActionEvent>()
+            .add_event::<ActionExecutedEvent>()
             .configure_sets(
                 Update,
                 (
@@ -40,13 +41,14 @@ impl Plugin for ActionsPlugin {
 }
 
 #[derive(SystemSet, Debug, Hash, PartialEq, Eq, Clone)]
-enum ActionSet {
+pub enum ActionSet {
     Planning,
     Late,
 }
 
 pub trait Action: Send + Sync {
     fn execute(&self, world: &mut World) -> Result<Vec<Box<dyn Action>>, ()>;
+    fn as_any(&self) -> &dyn Any;
 }
 
 #[derive(Default, Resource)]
@@ -66,3 +68,6 @@ pub struct ActionsCompleteEvent;
 
 #[derive(Event)]
 pub struct InvalidPlayerActionEvent;
+
+#[derive(Event)]
+pub struct ActionExecutedEvent(pub Box<dyn Action>);

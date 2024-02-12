@@ -35,6 +35,10 @@ impl Action for WalkAction {
         position.v = self.target_position;
         Ok(vec![])
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 pub struct MeleeAttackAction {
@@ -72,6 +76,10 @@ impl Action for MeleeAttackAction {
             .collect::<Vec<_>>();
         Ok(result)
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 pub struct DamageAction {
@@ -87,5 +95,9 @@ impl Action for DamageAction {
             world.despawn(self.target);
         }
         Ok(vec![])
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
     }
 }

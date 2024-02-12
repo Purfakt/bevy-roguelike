@@ -1,8 +1,9 @@
 use bevy::prelude::*;
 
-use crate::board::components::Position;
+use crate::{board::components::Position, states::TurnSet, vectors::Vector2Int};
 
 mod assets;
+mod components;
 mod pieces;
 mod tiles;
 
@@ -28,7 +29,12 @@ impl Plugin for GraphicsPlugin {
                 (
                     tiles::spawn_tile_renderer,
                     pieces::spawn_piece_renderer,
-                    pieces::update_piece_position,
+                    (
+                        pieces::path_animator_update,
+                        pieces::walk_animation,
+                        pieces::melee_animation,
+                    )
+                        .in_set(TurnSet::Animation),
                 ),
             );
     }
@@ -37,6 +43,10 @@ impl Plugin for GraphicsPlugin {
 #[derive(Event)]
 pub struct GraphicsWaitEvent;
 
+fn get_world_vec(v: Vector2Int, z: f32) -> Vec3 {
+    Vec3::new(TILE_SIZE * v.x as f32, TILE_SIZE * v.y as f32, z)
+}
+
 fn get_world_position(position: &Position, z: f32) -> Vec3 {
-    Vec3::new(TILE_SIZE * position.v.x as f32, TILE_SIZE * position.v.y as f32, z)
+    get_world_vec(position.v, z)
 }

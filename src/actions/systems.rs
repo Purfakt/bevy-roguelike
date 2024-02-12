@@ -10,7 +10,7 @@ use crate::{
 
 use super::{
     models::{MeleeAttackAction, WalkAction},
-    ActionsCompleteEvent, ActorQueue, InvalidPlayerActionEvent, NextActorEvent, PendingActions,
+    ActionExecutedEvent, ActionsCompleteEvent, ActorQueue, InvalidPlayerActionEvent, NextActorEvent, PendingActions,
 };
 
 pub const MOVE_SCORE: i32 = 50;
@@ -18,6 +18,17 @@ pub const ATTACK_SCORE: i32 = 100;
 
 pub fn populate_actor_queue(query: Query<Entity, (With<Actor>, Without<Player>)>, mut queue: ResMut<ActorQueue>) {
     queue.0.extend(query.iter());
+}
+
+fn execute_action(action: Box<dyn super::Action>, world: &mut World) -> bool {
+    if let Ok(result) = action.execute(world) {
+        if let Some(mut pending) = world.get_resource_mut::<PendingActions>() {
+            pending.0.extend(result);
+        }
+        world.send_event(ActionExecutedEvent(action));
+        return true;
+    }
+    false
 }
 
 pub fn process_action_queue(world: &mut World) {
@@ -35,19 +46,17 @@ pub fn process_action_queue(world: &mut World) {
     };
 
     let Some(mut actor) = world.get_mut::<Actor>(entity) else {
+        world.send_event(NextActorEvent);
         return;
     };
+
     let mut possible_actions = actor.potential_actions.drain(..).collect::<Vec<_>>();
     possible_actions.sort_by(|a, b| b.priority.partial_cmp(&a.priority).unwrap());
 
     let mut success = false;
-
-    for action in possible_actions {
-        if let Ok(result) = action.action.execute(world) {
-            if let Some(mut pending) = world.get_resource_mut::<PendingActions>() {
-                pending.0 = result;
-            }
-            success = true;
+    for possible_action in possible_actions {
+        success = success || execute_action(possible_action.action, world);
+        if success {
             break;
         }
     }
@@ -63,19 +72,14 @@ pub fn process_action_queue(world: &mut World) {
 fn process_pending_actions(world: &mut World) -> bool {
     let pending = match world.get_resource_mut::<PendingActions>() {
         Some(mut res) => res.0.drain(..).collect::<Vec<_>>(),
-        None => return false,
+        _ => return false,
     };
-    let mut new_actions = Vec::new();
+
     let mut success = false;
     for action in pending {
-        if let Ok(result) = action.execute(world) {
-            new_actions.extend(result);
-            success = true;
-        }
+        success = success || execute_action(action, world);
     }
 
-    let mut res = world.get_resource_mut::<PendingActions>().unwrap();
-    res.0 = new_actions;
     success
 }
 
@@ -90,9 +94,11 @@ pub fn plan_walk(
     let Ok((position, mut actor)) = query.get_mut(*entity) else {
         return;
     };
+
     let Ok(player_position) = player_query.get_single() else {
         return;
     };
+
     let positions = ORTHO_DIRECTIONS.iter().map(|dir| position.v + *dir).collect::<Vec<_>>();
     let path_to_player = find_path(
         position.v,

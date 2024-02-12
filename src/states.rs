@@ -14,3 +14,10 @@ pub enum GameState {
     PlayerInput,
     TurnUpdate,
 }
+
+#[derive(Clone, Debug, Hash, Eq, PartialEq, SystemSet)]
+pub enum TurnSet {
+    Logic,
+    Animation,
+    Tick,
+}

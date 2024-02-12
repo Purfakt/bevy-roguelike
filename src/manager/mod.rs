@@ -1,32 +1,41 @@
 use bevy::prelude::*;
 
 use crate::{
-    actions::{ActionsCompleteEvent, InvalidPlayerActionEvent, TickEvent},
+    actions::{ActionSet, ActionsCompleteEvent, InvalidPlayerActionEvent, TickEvent},
     graphics::GraphicsWaitEvent,
     player::PlayerActionEvent,
-    states::{GameState, MainState},
+    states::{GameState, MainState, TurnSet},
 };
 
 pub struct ManagerPlugin;
 
 impl Plugin for ManagerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(MainState::Game), game_start)
-            .add_systems(OnExit(MainState::Game), game_end)
-            .add_systems(
-                Update,
+        app.configure_sets(
+            Update,
+            (
+                (TurnSet::Logic, TurnSet::Animation, TurnSet::Tick)
+                    .chain()
+                    .in_set(GameState::TurnUpdate),
+                (ActionSet::Planning, ActionSet::Late).in_set(TurnSet::Logic),
+            ),
+        )
+        .add_systems(OnEnter(MainState::Game), game_start)
+        .add_systems(OnExit(MainState::Game), game_end)
+        .add_systems(
+            Update,
+            (
+                turn_update_start.run_if(on_event::<PlayerActionEvent>()),
+                tick.run_if(in_state(GameState::TurnUpdate)),
                 (
-                    turn_update_start.run_if(on_event::<PlayerActionEvent>()),
-                    tick.run_if(in_state(GameState::TurnUpdate)),
-                    (
-                        turn_update_end
-                            .run_if(on_event::<ActionsCompleteEvent>())
-                            .run_if(in_state(GameState::TurnUpdate)),
-                        turn_update_cancel.run_if(on_event::<InvalidPlayerActionEvent>()),
-                    ),
-                )
-                    .chain(),
-            );
+                    turn_update_end
+                        .run_if(on_event::<ActionsCompleteEvent>())
+                        .run_if(in_state(GameState::TurnUpdate)),
+                    turn_update_cancel.run_if(on_event::<InvalidPlayerActionEvent>()),
+                ),
+            )
+                .chain(),
+        );
     }
 }
 
