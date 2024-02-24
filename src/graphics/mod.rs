@@ -15,7 +15,8 @@ pub const POSITION_TOLERANCE: f32 = 0.1;
 
 #[derive(Resource)]
 pub struct GraphicsAssets {
-    pub sprite_texture: Handle<TextureAtlas>,
+    pub texture: Handle<Image>,
+    pub layout: Handle<TextureAtlasLayout>,
 }
 
 pub struct GraphicsPlugin;

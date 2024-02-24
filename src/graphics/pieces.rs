@@ -51,13 +51,18 @@ pub fn spawn_piece_renderer(
             "Player" => 1,
             _ => 63,
         };
-        let mut sprite = TextureAtlasSprite::new(sprite_idx);
-        sprite.custom_size = Some(Vec2::splat(TILE_SIZE));
-        sprite.color = Color::WHITE;
         let v = get_world_position(position, PIECE_Z);
         commands.entity(entity).insert(SpriteSheetBundle {
-            sprite,
-            texture_atlas: assets.sprite_texture.clone(),
+            sprite: Sprite {
+                color: Color::WHITE,
+                custom_size: Some(Vec2::splat(TILE_SIZE)),
+                ..Default::default()
+            },
+            atlas: TextureAtlas {
+                layout: assets.layout.clone(),
+                index: sprite_idx,
+            },
+            texture: assets.texture.clone(),
             transform: Transform::from_translation(v),
             ..Default::default()
         });

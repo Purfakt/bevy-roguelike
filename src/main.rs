@@ -38,8 +38,8 @@ fn main() {
                 .set(ImagePlugin::default_nearest()),
         )
         .insert_resource(Msaa::Off)
-        .add_state::<MainState>()
-        .add_state::<GameState>()
+        .init_state::<MainState>()
+        .init_state::<GameState>()
         .add_plugins((
             actions::ActionsPlugin,
             assets::AssetPlugin,

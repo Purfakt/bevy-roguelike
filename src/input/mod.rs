@@ -16,14 +16,14 @@ impl Plugin for InputPlugin {
 }
 
 const DIR_KEY_MAPPING: [(KeyCode, Vector2Int); 4] = [
-    (KeyCode::W, Vector2Int::UP),
-    (KeyCode::S, Vector2Int::DOWN),
-    (KeyCode::A, Vector2Int::LEFT),
-    (KeyCode::D, Vector2Int::RIGHT),
+    (KeyCode::KeyW, Vector2Int::UP),
+    (KeyCode::KeyS, Vector2Int::DOWN),
+    (KeyCode::KeyA, Vector2Int::LEFT),
+    (KeyCode::KeyD, Vector2Int::RIGHT),
 ];
 
 fn player_input(
-    keys: ResMut<Input<KeyCode>>,
+    keys: ResMut<ButtonInput<KeyCode>>,
     mut player_query: Query<&Position, With<Player>>,
     mut event_deck: EventWriter<DeckEvent>,
 ) {
