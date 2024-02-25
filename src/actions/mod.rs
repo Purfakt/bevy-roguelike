@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use std::{any::Any, collections::VecDeque};
 
-use crate::states::GameState;
+use crate::states::{GameState, TurnSet};
 
 use self::systems::{plan_melee_attack, plan_walk, populate_actor_queue, process_action_queue};
 
@@ -23,16 +23,18 @@ impl Plugin for ActionsPlugin {
                 Update,
                 (
                     ActionSet::Planning
-                        .before(ActionSet::Late)
                         .run_if(on_event::<NextActorEvent>())
-                        .run_if(in_state(GameState::TurnUpdate)),
-                    ActionSet::Late.run_if(in_state(GameState::TurnUpdate)),
-                ),
+                        .before(ActionSet::Late),
+                    ActionSet::Late,
+                )
+                    .in_set(TurnSet::Logic),
             )
             .add_systems(
                 Update,
                 (
-                    process_action_queue.in_set(ActionSet::Late),
+                    process_action_queue
+                        .run_if(on_event::<TickEvent>())
+                        .in_set(ActionSet::Late),
                     (plan_melee_attack, plan_walk).in_set(ActionSet::Planning),
                 ),
             )
